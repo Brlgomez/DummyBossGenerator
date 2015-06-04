@@ -74,7 +74,7 @@ x = 0
 for x in range(0, monsterLength):
   i = 0
   for i in range(0, len(monsterShape)):
-    if[monsterShape[i][0] - 0, monsterShape[i][1] + 1] not in monsterShape and :
+    if[monsterShape[i][0] - 0, monsterShape[i][1] + 1] not in monsterShape:
       next.insert(-1,[monsterShape[i][0] - 0, monsterShape[i][1] + 1])
     if[monsterShape[i][0] - 1, monsterShape[i][1] - 0] not in monsterShape:
       next.insert(-1,[monsterShape[i][0] - 1, monsterShape[i][1] - 0])

@@ -8,8 +8,8 @@ from random import random, randint, choice
 
 Library = {
   'Initial': {
-    'width': 14,
-    'length': 5,
+    'width': 20,
+    'length': 10,
     'body':{}
     },
   'Types': ["a", "b", "c", "d","f","g","h","i","j","k","l"],
@@ -45,6 +45,9 @@ def randomAssign(state):
   l = randint(0,state['length']-1)
   assignTile(state,(w,l),choice(Library['Types']))
 
+def assign(state, w, l):
+  assignTile(state,(w,l),choice(Library['Types']))
+
 def draw(state):
   for l in range(0,state['length']):
     line = ''
@@ -64,34 +67,35 @@ def sumProp(state,prop):
 
 monsterLength = 20
 monsterShape = []
-possible = []
-possible.insert(-1,[7,3])
-current = possible
+current = []
+monsterShape.insert(-1,[Library['Initial']['width']/2, Library['Initial']['length']/2])
 next = []
 x = 0
 for x in range(0, monsterLength):
   i = 0
-  for i in range(0, len(current)):
-    if[current[i][0] - 0, current[i][1] + 1] not in current:
-      next.insert(-1,[current[i][0] - 0, current[i][1] + 1])
-    if[current[i][0] - 1, current[i][1] - 0] not in current:
-      next.insert(-1,[current[i][0] - 1, current[i][1] - 0])
-    if[current[i][0] - 0, current[i][1] - 1] not in current:
-      next.insert(-1,[current[i][0] - 0, current[i][1] - 1])
-    if[current[i][0] + 1, current[i][1] - 0] not in current:
-      next.insert(-1,[current[i][0] + 1, current[i][1] - 0])
-
-  current.insert(-1, next.pop(randint(0, len(next) - 1)))
+  for i in range(0, len(monsterShape)):
+    if[monsterShape[i][0] - 0, monsterShape[i][1] + 1] not in monsterShape and :
+      next.insert(-1,[monsterShape[i][0] - 0, monsterShape[i][1] + 1])
+    if[monsterShape[i][0] - 1, monsterShape[i][1] - 0] not in monsterShape:
+      next.insert(-1,[monsterShape[i][0] - 1, monsterShape[i][1] - 0])
+    if[monsterShape[i][0] - 0, monsterShape[i][1] - 1] not in monsterShape:
+      next.insert(-1,[monsterShape[i][0] - 0, monsterShape[i][1] - 1])
+    if[monsterShape[i][0] + 1, monsterShape[i][1] - 0] not in monsterShape:
+      next.insert(-1,[monsterShape[i][0] + 1, monsterShape[i][1] - 0])
+  monsterShape.insert(-1, next.pop(randint(0, len(next) - 1)))
   del next[:]
 
-print current
-
-
+#print monsterShape
 
 state = Library['Initial']
-while (len(state['body'])<20):
-  randomAssign(state);
+for j in range(0, len(monsterShape)):
+  assign(state, monsterShape[j][0], monsterShape[j][1])
 draw(state)
+
+#state = Library['Initial']
+#while (len(state['body'])<20):
+#  randomAssign(state);
+#draw(state)
 
 #state = Library['Initial']
 #for i in range(0,1000):
