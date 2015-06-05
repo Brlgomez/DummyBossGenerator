@@ -65,31 +65,41 @@ def sumProp(state,prop):
   	    sum += Library['Props'][tile][prop]
   return sum
 
-monsterLength = 20
-monsterShape = []
-current = []
-monsterShape.insert(-1,[Library['Initial']['width']/2, Library['Initial']['length']/2])
-next = []
-x = 0
-for x in range(0, monsterLength):
-  i = 0
-  for i in range(0, len(monsterShape)):
-    if[monsterShape[i][0] - 0, monsterShape[i][1] + 1] not in monsterShape:
-      next.insert(-1,[monsterShape[i][0] - 0, monsterShape[i][1] + 1])
-    if[monsterShape[i][0] - 1, monsterShape[i][1] - 0] not in monsterShape:
-      next.insert(-1,[monsterShape[i][0] - 1, monsterShape[i][1] - 0])
-    if[monsterShape[i][0] - 0, monsterShape[i][1] - 1] not in monsterShape:
-      next.insert(-1,[monsterShape[i][0] - 0, monsterShape[i][1] - 1])
-    if[monsterShape[i][0] + 1, monsterShape[i][1] - 0] not in monsterShape:
-      next.insert(-1,[monsterShape[i][0] + 1, monsterShape[i][1] - 0])
-  monsterShape.insert(-1, next.pop(randint(0, len(next) - 1)))
-  del next[:]
+def createMonster(parts):
+  monsterLength = parts
+  monsterShape = []
+  current = []
+  width = Library['Initial']['width']
+  length = Library['Initial']['length']
+  monsterShape.insert(-1, [width/2, length/2])
+  next = []
+  j = 0
+  for j in range(0, monsterLength-1):
+    i = 0
+    for i in range(0, len(monsterShape)):
+      x = monsterShape[i][0]
+      y = monsterShape[i][1]
+      if[x - 0, y + 1] not in monsterShape: 
+        if x-0 >= 0 and x-0 <= width and y+1 >= 0 and y+1 <= length:
+          next.insert(-1,[x - 0, y + 1])
+      if[x - 1, y - 0] not in monsterShape:
+        if x-1 >= 0 and x-1 <= width and y+0 >= 0 and y+0 <= length:
+          next.insert(-1,[x - 1, y - 0])
+      if[x - 0, y - 1] not in monsterShape:
+        if x-0 >= 0 and x-0 <= width and y-1 >= 0 and y-1 <= length:
+          next.insert(-1,[x - 0, y - 1])
+      if[x + 1, y - 0] not in monsterShape:
+        if x+1 >= 0 and x+1 <= width and y-0 >= 0 and y-0 <= length:
+          next.insert(-1,[x + 1, y - 0])
+    monsterShape.insert(-1, next.pop(randint(0, len(next) - 1)))
+    del next[:]
+  return monsterShape
 
-#print monsterShape
-
+monster = []
+monster = createMonster(20)
 state = Library['Initial']
-for j in range(0, len(monsterShape)):
-  assign(state, monsterShape[j][0], monsterShape[j][1])
+for j in range(0, len(monster)):
+  assign(state, monster[j][0], monster[j][1])
 draw(state)
 
 #state = Library['Initial']
