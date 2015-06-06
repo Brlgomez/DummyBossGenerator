@@ -99,7 +99,7 @@ def sumProp(state,prop):
   	    sum += Library['Props'][tile][prop]
   return sum
 
-def createMonster(parts):
+def createMonster(parts, maxup, maxdown, maxleft, maxright):
   monsterLength = parts
   monsterShape = []
   current = []
@@ -111,18 +111,22 @@ def createMonster(parts):
     for i in range(0, len(monsterShape)):
       x = monsterShape[i][0]
       y = monsterShape[i][1]
-      if[x - 0, y + 1] not in monsterShape and [x - 0, y + 1] not in next: 
+      if[x - 0, y + 1] not in monsterShape and [x - 0, y + 1] not in next:
         if x-0 >= 0 and x-0 <= width and y+1 >= 0 and y+1 <= length:
-          next.insert(0,[x - 0, y + 1])
+          if y+1 <= length/2 + maxup:
+            next.insert(0,[x - 0, y + 1])
       if[x - 1, y - 0] not in monsterShape and [x - 1, y - 0] not in next:
         if x-1 >= 0 and x-1 <= width and y+0 >= 0 and y+0 <= length:
-          next.insert(0,[x - 1, y - 0])
+          if x-1 >= width/2 - maxleft:
+            next.insert(0,[x - 1, y - 0])
       if[x - 0, y - 1] not in monsterShape and [x - 0, y - 1] not in next:
         if x-0 >= 0 and x-0 <= width and y-1 >= 0 and y-1 <= length:
-          next.insert(0,[x - 0, y - 1])
+          if y-1 >= length/2 - maxdown:
+            next.insert(0,[x - 0, y - 1])
       if[x + 1, y - 0] not in monsterShape and [x + 1, y - 0] not in next:
         if x+1 >= 0 and x+1 <= width and y-0 >= 0 and y-0 <= length:
-          next.insert(0,[x + 1, y - 0])
+          if x+1 <= width/2 + maxright:
+            next.insert(0,[x + 1, y - 0])
     monsterShape.insert(-1, next.pop(randint(0, len(next) - 1)))
   return monsterShape
 
@@ -132,22 +136,18 @@ def createMonster(parts):
 #2 = height
 max = 0
 boss = ""
-for i in range(0, 100):
-  monster = []
-  monster = createMonster(50)
-  state = Library['Initial']
-  for j in range(0, len(monster)):
-    assign(state, monster[j][0], monster[j][1])
-  if max < sumProp(state,'sword') + sumProp(state,'arrow') + sumProp(state,'fire'):
-    boss = draw(state)[0]
-    max = sumProp(state,'sword') + sumProp(state,'arrow') + sumProp(state,'fire')
-  Library['Initial'] = {
-    'width': 30,
-    'length': 20,
-    'body':{}
-    } 
+monster = []
+#(parts, maxup, maxdown, maxleft, maxright)
+monster = createMonster(50, 1, 1, 10, 10)
+state = Library['Initial']
+for j in range(0, len(monster)):
+  assign(state, monster[j][0], monster[j][1])
+boss = draw(state)[0]
+length = draw(state)[1]
+height = draw(state)[2]
+max = sumProp(state,'sword') + sumProp(state,'arrow') + sumProp(state,'fire')
 
-print boss
+print boss, length, height
 print max
 
 #print draw(state)[0]
