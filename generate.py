@@ -69,14 +69,28 @@ def assign(state, w, l):
   assignTile(state,(w,l),choice(Library['Types']))
 
 def draw(state):
+  bigstring = ""
+  maxlength = 0
+  maxheight = 0
+  init = False
   for l in range(0,state['length']):
     line = ''
+    length = 0
+    init = False
     for w in range(0,state['width']):
 	  if (w,l) in state['body']:
 	    line+=state['body'][(w,l)]
+            length = length + 1
+            if length > maxlength:
+              maxlength = length
+            if init == False:
+              maxheight += 1
+              init = True
 	  else:
 	    line+=' '
-    print line
+    bigstring += line + '\n'
+  return bigstring, maxlength, maxheight
+
 def sumProp(state,prop):
   sum = 0
   for tile in state['body'].values():
@@ -91,37 +105,55 @@ def createMonster(parts):
   current = []
   width = Library['Initial']['width']
   length = Library['Initial']['length']
-  monsterShape.insert(-1, [width/2, length/2])
+  monsterShape.insert(0, [width/2, length/2])
   next = []
-  j = 0
   for j in range(0, monsterLength - 1):
-    i = 0
     for i in range(0, len(monsterShape)):
       x = monsterShape[i][0]
       y = monsterShape[i][1]
       if[x - 0, y + 1] not in monsterShape and [x - 0, y + 1] not in next: 
         if x-0 >= 0 and x-0 <= width and y+1 >= 0 and y+1 <= length:
-          next.insert(-1,[x - 0, y + 1])
+          next.insert(0,[x - 0, y + 1])
       if[x - 1, y - 0] not in monsterShape and [x - 1, y - 0] not in next:
         if x-1 >= 0 and x-1 <= width and y+0 >= 0 and y+0 <= length:
-          next.insert(-1,[x - 1, y - 0])
+          next.insert(0,[x - 1, y - 0])
       if[x - 0, y - 1] not in monsterShape and [x - 0, y - 1] not in next:
         if x-0 >= 0 and x-0 <= width and y-1 >= 0 and y-1 <= length:
-          next.insert(-1,[x - 0, y - 1])
+          next.insert(0,[x - 0, y - 1])
       if[x + 1, y - 0] not in monsterShape and [x + 1, y - 0] not in next:
         if x+1 >= 0 and x+1 <= width and y-0 >= 0 and y-0 <= length:
-          next.insert(-1,[x + 1, y - 0])
+          next.insert(0,[x + 1, y - 0])
     monsterShape.insert(-1, next.pop(randint(0, len(next) - 1)))
-    del next[:]
   return monsterShape
 
-monster = []
-monster = createMonster(50)
+#boss = draw(state)[#]
+#0 = string
+#1 = length
+#2 = height
+max = 0
+boss = ""
+for i in range(0, 100):
+  monster = []
+  monster = createMonster(50)
+  state = Library['Initial']
+  for j in range(0, len(monster)):
+    assign(state, monster[j][0], monster[j][1])
+  if max < sumProp(state,'sword') + sumProp(state,'arrow') + sumProp(state,'fire'):
+    boss = draw(state)[0]
+    max = sumProp(state,'sword') + sumProp(state,'arrow') + sumProp(state,'fire')
+  Library['Initial'] = {
+    'width': 30,
+    'length': 20,
+    'body':{}
+    } 
 
-state = Library['Initial']
-for j in range(0, len(monster)):
-  assign(state, monster[j][0], monster[j][1])
-draw(state)
+print boss
+print max
+
+#print draw(state)[0]
+#print 'sword',sumProp(state,'sword')
+#print 'arrow',sumProp(state,'arrow')
+#print 'fire',sumProp(state,'fire')
 
 #state = Library['Initial']
 #while (len(state['body'])<20):
@@ -132,10 +164,10 @@ draw(state)
 #for i in range(0,1000):
 #  randomAssign(state);
 #draw(state)
-print 'sword',sumProp(state,'sword')
+#print 'sword',sumProp(state,'sword')
 
 #state = Library['Initial']
 #while (sumProp(state,'fire') < 60):
 #  randomAssign(state);
 #draw(state)
-print 'fire',sumProp(state,'fire')
+#print 'fire',sumProp(state,'fire')
