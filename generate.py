@@ -99,10 +99,16 @@ def sumProp(state,prop):
   	    sum += Library['Props'][tile][prop]
   return sum
 
-def createMonster(parts, width = 20, length = 30, maxup = length/2, maxdown = length/2, maxleft=width/2, maxright = width/2):
+def createMonster(parts, width = 30, length = 20, up = -1, down = -1, left=-1, right = -1):
+  parts = parts if parts<=width*length else width*length
   monsterLength = parts
   monsterShape = []
   current = []
+  maxup = up if up >= 0 else length/2
+  maxdown = down if down>= 0 else length/2
+  maxleft = left if left>= 0 else width/2
+  maxright = right if right>= 0 else width/2
+  #print parts,maxup,maxdown,maxright,maxleft
   #width = Library['Initial']['width']
   #length = Library['Initial']['length']
   monsterShape.insert(0, [width/2, length/2])
@@ -141,7 +147,8 @@ def createMonster(parts, width = 20, length = 30, maxup = length/2, maxdown = le
 #2 = height
 monster = []
 #(# of parts, maxup, maxdown, maxleft, maxright)
-monster = createMonster(50, 10, 10, 10, 10, 100, 20)
+#monster = createMonster(50, 10, 10, 10, 10, 100, 20)
+monster = createMonster(50,length = 10,width = 10)
 print draw(monster)[0]
 
 #print draw(state)[0]
