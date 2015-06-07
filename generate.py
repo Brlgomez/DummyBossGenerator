@@ -131,25 +131,16 @@ def createMonster(parts, maxup, maxdown, maxleft, maxright):
   state = Library['Initial']
   for k in range(0, len(monsterShape)):
     assign(state, monsterShape[k][0], monsterShape[k][1])
-  return draw(state)
+  return state
 
 #boss = draw(state)[#]
 #0 = string
 #1 = length
 #2 = height
-max = 0
 monster = []
 #(# of parts, maxup, maxdown, maxleft, maxright)
 monster = createMonster(20, 5, 5, 5, 5)
-print monster[0]
-#print monster[0]
-#state = Library['Initial']
-#for j in range(0, len(monster)):
-#  assign(state, monster[j][0], monster[j][1])
-#boss, length, height = draw(state)
-
-#max = sumProp(state,'sword') + sumProp(state,'arrow') + sumProp(state,'fire')
-#print max
+print draw(monster)[0]
 
 #print draw(state)[0]
 #print 'sword',sumProp(state,'sword')
