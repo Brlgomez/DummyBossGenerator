@@ -87,7 +87,7 @@ def draw(state):
               maxheight += 1
               init = True
 	  else:
-	    line+=' '
+	    line+='-'
     bigstring += line + '\n'
   return bigstring, maxlength, maxheight
 
@@ -99,12 +99,12 @@ def sumProp(state,prop):
   	    sum += Library['Props'][tile][prop]
   return sum
 
-def createMonster(parts, maxup, maxdown, maxleft, maxright):
+def createMonster(parts, width = 20, length = 30, maxup = length/2, maxdown = length/2, maxleft=width/2, maxright = width/2):
   monsterLength = parts
   monsterShape = []
   current = []
-  width = Library['Initial']['width']
-  length = Library['Initial']['length']
+  #width = Library['Initial']['width']
+  #length = Library['Initial']['length']
   monsterShape.insert(0, [width/2, length/2])
   next = []
   for j in range(0, monsterLength - 1):
@@ -129,6 +129,8 @@ def createMonster(parts, maxup, maxdown, maxleft, maxright):
             next.insert(0,[x + 1, y - 0])
     monsterShape.insert(-1, next.pop(randint(0, len(next) - 1)))
   state = Library['Initial']
+  state['width'] = width
+  state['length'] = length
   for k in range(0, len(monsterShape)):
     assign(state, monsterShape[k][0], monsterShape[k][1])
   return state
@@ -139,7 +141,7 @@ def createMonster(parts, maxup, maxdown, maxleft, maxright):
 #2 = height
 monster = []
 #(# of parts, maxup, maxdown, maxleft, maxright)
-monster = createMonster(20, 5, 5, 5, 5)
+monster = createMonster(50, 10, 10, 10, 10, 100, 20)
 print draw(monster)[0]
 
 #print draw(state)[0]
