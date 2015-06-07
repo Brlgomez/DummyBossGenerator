@@ -12,5 +12,15 @@ def numTiles():
 def posTiles():
     for key in state['body']:
         print key, 'corresponds to', state['body'][key]
-        
-numTiles()
+'''        
+def numSpecTiles():
+    num_type = {}
+    for key in state['body']:
+        for i in range(len(num_type)):
+            if state['body'][key] == Library['Types'][i]
+            num_type[i]+= 1
+    for type in num_type:
+        print type, 'is the total amount of boss tiles'
+
+
+numSpecTiles()'''
