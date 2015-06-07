@@ -136,10 +136,9 @@ def createMonster(parts, maxup, maxdown, maxleft, maxright):
 #2 = height
 max = 0
 boss = ""
-#for i in range(0, 100):
 monster = []
-#(parts, maxup, maxdown, maxleft, maxright)
-monster = createMonster(50, 1, 1, 10, 10)
+#(# of parts, maxup, maxdown, maxleft, maxright)
+monster = createMonster(20, 5, 5, 5, 5)
 state = Library['Initial']
 for j in range(0, len(monster)):
   assign(state, monster[j][0], monster[j][1])
