@@ -23,16 +23,17 @@ def gen(canvas,x,y,width,start):
   W = width
   def draw():
     global boss
-    state = generate.initialize(20,20)
-    while (len(state['body'])<200):
-        generate.randomAssign(state);
-    generate.draw(state)
-    print 'fire', generate.sumProp(state,'fire')
-    print 'sword',generate.sumProp(state,'sword')
-    print 'arrow',generate.sumProp(state,'arrow')
+    #state = generate.initialize(20,20)
+    state = generate.createMonster(50,10,10)
+    #while (len(state['body'])<200):
+    #    generate.randomAssign(state);
+    print generate.draw(state)[0]
+    #print 'fire', generate.sumProp(state,'fire')
+    #print 'sword',generate.sumProp(state,'sword')
+    #print 'arrow',generate.sumProp(state,'arrow')
     boss = state
     drawBoss(C,boss,x,y,cell = width,anchor =start )
-  return draw
+  return draw 
 def drawCell(canvas, x, y, width, type):
     coord = (x,y,x+width,y+width)
     color = COLOR[type]
