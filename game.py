@@ -23,6 +23,9 @@ TOOLS = {
     "damageType":"fire",
   }
 }
+NOTHING_HAPPENED = 0
+DEAD = 1
+MOVED = 2
 # ###############################################
 # FUNCTIONS CALLED DURING TICKS AND COLLISIONS
 #
@@ -40,30 +43,32 @@ def contactWith(targets,do):
 # goal should be a lambda function, like 
 # (lambda x: x>2)
 def countDown(goal,do,increment = 1,restart = True):
-    def function(state,this,that):
+    def function(state,this,that = None):
         if goal(this["counter"]):
-            return do(state,this,that)
             if restart: this["counter"] = 0
+            return do(state,this,that)
         else:
             this["counter"] += increment
+    return function
 #deletes it's own index
 def killSelf(state,this,that = None):
     dict, i = this["dataLoc"]
     del state[dict][i]
-    return True 
-    #returns to true to show that object was deleted
-
+    return DEAD
 #move in object's direction
 def moveForward(state,this, that = None):
     loc = {"N":(0,-1),"E":(1,0),"W":(-1,0),"S":(0,1)}
+    #print this["name"]
     dx,dy = loc[this["direction"]]
     x,y = this["physLoc"]
     nX, nY = x+dx*this["movementSpeed"],y+dy*this["movementSpeed"]
+    #print x,y
+    #print dx,dy
+    #print nX,nY
     if (nX<0 or nX>=state["width"] or nY<0 or nY>=state["length"]):
-        return False
+        return
     this["physLoc"] = (nX,nY)
-    return True
-    #returns true to show that object collision should be checked
+    return MOVED
 #objects stay in grid locations, one per location
 OBJECTS = {
   "wall":{
@@ -100,7 +105,7 @@ ENTITIES = {
     "damageType":"slash",
     "counter": 0,
     "onCollision": [],
-    "onTick": [countDown((lambda x: x>=2),killSelf)],
+    "onTick": [countDown(lambda x: x>0,killSelf)],
     "asChar": '/'
   },
   "arrowEntity":{
@@ -127,7 +132,7 @@ ENTITIES = {
     "dataLoc": ("objects",0),
     "physLoc": (0,0),
     "isSolid":False,
-    "movementSpeed":0,
+    "movementSpeed":1,
     "movementDirection":"N",
     "damageEnemy":False,
     "damageHero":False,
@@ -192,14 +197,20 @@ def intersect(minX1,maxX1,minY1,maxY1,minX2,maxX2,minY2,maxY2):
     insideY = (minY1<=minY2 and minY2<=maxY1) or (minY2<=minY1 and minY1<=maxY2)
     return insideX and insideY
 def intersectThat(minX,maxX,minY,maxY,that):
-    eMinX,eMinY = that["physLoc"]
-    eMaxX,eMaxY = eMinX + that["width"],eMinY + that["length"]
+    w,l = that["width"]/2,that["length"]/2
+    x,y = that["physLoc"]
+    eMinX, eMinY = x-w,y-l
+    eMaxX,eMaxY = x+w,y+l
     return intersect(minX,maxX,minY,maxY,eMinX,eMaxX,eMinY,eMaxY)
 def intersectThisThat(this, that):
-    minX,minY = this["physLoc"] 
-    maxX,maxY = minX + this["width"],minY + this["length"]
-    eMinX, eMinY = that["physLoc"]
-    eMaxX,eMaxY = eMinX + that["width"],eMinY + that["length"]
+    w,l = this["width"]/2,this["length"]/2
+    x,y = this["physLoc"]
+    minX,minY = x-w,y-l 
+    maxX,maxY = x+w,y+l
+    w,l = that["width"]/2,that["length"]/2
+    x,y = that["physLoc"]
+    eMinX, eMinY = x-w,y-l
+    eMaxX,eMaxY = x+w,y+l
     return intersect(minX,maxX,minY,maxY,eMinX,eMaxX,eMinY,eMaxY)
 def entitiesToGrid(entities):
     entityDict = {}
@@ -227,14 +238,14 @@ def stateToString(state):
             str+=ch
         str+='\n'
     return str
-def viableLoc(state,x,y):
+def viableLoc(state,x,y,w=0,l=0):
     if (x<0 or x>=state["width"] or y<0 or y>=state["length"]):
         return False
     for object in state['objects'].values():
-        if object["isSolid"] and intersectThat(x,x+1,y,y+1,object):
+        if object["isSolid"] and intersectThat(x-w,x+w,y-l,y+l,object):
             return False
     for loc,entity in state['entities']:
-        if entity["isSolid"] and intersectThat(x,x+1,y,y+1,entity):
+        if entity["isSolid"] and intersectThat(x-w,x+w,y-l,y+l,entity):
             return False
     return True
 def checkCollision(state,this):
@@ -250,16 +261,28 @@ def tick(state):
     for loc,object in state["objects"].items():
         for function in object["onTick"]:
             function(state,object)
-    for i in range(len(state["entities"])):
+    #for i in range(len(state["entities"])):
+    i = 0
+    while (i<len(state["entities"])):
         entity = state["entities"][i][1]
+        isDead = False
         for tickFunction in entity["onTick"]:
-            if tickFunction(state,entity):  
+            if isDead: break
+            #returns true if collision should be checked
+            this = tickFunction(state,entity)
+            if this is MOVED:
                 state["entities"][i] = (entity["physLoc"],entity)
                 colliding = checkCollision(state,entity)
                 for colFunction in entity["onCollision"]:
                     for that in colliding:
-                        if colFunction(state,entity,that): break
-
+                        this = colFunction(state,entity,that)
+                        if this is DEAD:
+                            isDead = True
+                            i -=1
+                            break
+                    if isDead: break
+            if this is DEAD:i -= 1
+        i+=1
 def playerTurn(state,direction):
     state["playerDirection"] = direction
 def playerForward(state,distance):
@@ -276,6 +299,19 @@ def shootArrow(state):
     nX, nY = x+dx,y+dy
     arrow = placeEntity(state,nX,nY,"arrowEntity")
     arrow["direction"] = state["playerDirection"]
+def shootFire(state):
+    loc = {"N":(0,-1),"E":(1,0),"W":(-1,0),"S":(0,1)}
+    dx,dy = loc[state["playerDirection"]]
+    x,y = state["player"]
+    nX, nY = x+dx,y+dy
+    fire = placeEntity(state,nX,nY,"fireBallEntity")
+    fire["direction"] = state["playerDirection"]
+def swingSword(state):
+    loc = {"N":(0,-1),"E":(1,0),"W":(-1,0),"S":(0,1)}
+    dx,dy = loc[state["playerDirection"]]
+    x,y = state["player"]
+    nX, nY = x+dx,y+dy
+    placeEntity(state,nX,nY,"swordQEntity")
 
 
 #def useCurrentItem(state):
@@ -285,7 +321,13 @@ print stateToString(state)
 shootArrow(state)
 playerTurn(state,"W")
 shootArrow(state)
+playerTurn(state,"S")
+shootFire(state)
 for i in range(3):
   #playerForward(state,1)
   tick(state)    
+swingSword(state)
+tick(state)
+print stateToString(state)
+tick(state)
 print stateToString(state)
