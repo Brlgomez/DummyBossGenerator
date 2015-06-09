@@ -36,7 +36,7 @@ def difficulty():
         print 'If your only tool is a sword: Difficult'
     elif(sword_total > sword_points['diff'] and sword_total <= sword_points['inter']):
         print 'If your only tool is a sword: Intermediate'
-    elif(sword_total > sword_points['inter'] and sword_total <= sword_points['diff']):
+    elif(sword_total > sword_points['inter'] and sword_total <= sword_points['easy']):
         print 'If your only tool is a sword: Easy'
     print 'Sword score', sword_total
  
@@ -47,7 +47,7 @@ def difficulty():
         print 'If your only tool is a fire: Difficult'
     elif(fire_total > fire_points['diff'] and fire_total <= fire_points['inter']):
         print 'If your only tool is a fire: Intermediate'
-    elif(fire_total > fire_points['inter'] and fire_total <= fire_points['diff']):
+    elif(fire_total > fire_points['inter'] and fire_total <= fire_points['easy']):
         print 'If your only tool is a fire: Easy'
     print 'fire score', fire_total
 
@@ -58,7 +58,7 @@ def difficulty():
         print 'If your only tool is a arrow: Difficult'
     elif(arrow_total > arrow_points['diff'] and arrow_total <= arrow_points['inter']):
         print 'If your only tool is a arrow: Intermediate'
-    elif(arrow_total > arrow_points['inter'] and arrow_total <= arrow_points['diff']):
+    elif(arrow_total > arrow_points['inter'] and arrow_total <= arrow_points['easy']):
         print 'If your only tool is a arrow: Easy'
     print 'arrow score', arrow_total    
     
