@@ -32,35 +32,17 @@ def difficulty():
     # To calculate this
     sword_points = solve_points('sword')
     sword_total = sumProp(monster, 'sword')
-    if(sword_total <= sword_points['diff']):
-        print 'If your only tool is a sword: Difficult'
-    elif(sword_total > sword_points['diff'] and sword_total <= sword_points['inter']):
-        print 'If your only tool is a sword: Intermediate'
-    elif(sword_total > sword_points['inter'] and sword_total <= sword_points['easy']):
-        print 'If your only tool is a sword: Easy'
-    print 'Sword score', sword_total
+    diff_checker(sword_points, sword_total, 'sword')
  
     #Difficulty for just fire
     fire_points = solve_points('fire')
     fire_total = sumProp(monster, 'fire')
-    if(fire_total <= fire_points['diff']):
-        print 'If your only tool is a fire: Difficult'
-    elif(fire_total > fire_points['diff'] and fire_total <= fire_points['inter']):
-        print 'If your only tool is a fire: Intermediate'
-    elif(fire_total > fire_points['inter'] and fire_total <= fire_points['easy']):
-        print 'If your only tool is a fire: Easy'
-    print 'fire score', fire_total
+    diff_checker(fire_points, fire_total, 'fire')
 
     #Difficulty for just arrow
     arrow_points = solve_points('arrow')
     arrow_total = sumProp(monster, 'arrow')
-    if(arrow_total <= arrow_points['diff']):
-        print 'If your only tool is a arrow: Difficult'
-    elif(arrow_total > arrow_points['diff'] and arrow_total <= arrow_points['inter']):
-        print 'If your only tool is a arrow: Intermediate'
-    elif(arrow_total > arrow_points['inter'] and arrow_total <= arrow_points['easy']):
-        print 'If your only tool is a arrow: Easy'
-    print 'arrow score', arrow_total    
+    diff_checker(arrow_points, arrow_total, 'arrow')
     
     
 def solve_points(tool):
@@ -77,6 +59,15 @@ def solve_points(tool):
     points['inter'] = i
     points['diff'] = d
     return points
+    
+def diff_checker(tool_points, tool_total, tool):
+    if(tool_total <= tool_points['diff']):
+        print 'If your only tool is a', tool,': Difficult'
+    elif(tool_total > tool_points['diff'] and tool_total <= tool_points['inter']):
+        print 'If your only tool is a', tool,': Intermediate'
+    elif(tool_total > tool_points['inter'] and tool_total <= tool_points['easy']):
+        print 'If your only tool is a', tool,': Easy'
+    print tool,' score', tool_total, 'out of', tool_points['easy']
     
 difficulty()
 
