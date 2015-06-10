@@ -1,6 +1,7 @@
 from Tkinter import *
 from tkMessageBox import *
 import generate
+import analyze_boss
 
 TILE_SIZE = 32
 COLOR = {
@@ -28,6 +29,10 @@ def gen(canvas,x,y,width,start):
     #while (len(state['body'])<200):
     #    generate.randomAssign(state);
     print generate.draw(state)[0]
+    area = analyze_boss.numTiles(state)
+    #pos = analyze_boss.posTiles(state)
+    num = analyze_boss.numSpecTiles(state)
+    analyze_boss.difficulty(state)
     #print 'fire', generate.sumProp(state,'fire')
     #print 'sword',generate.sumProp(state,'sword')
     #print 'arrow',generate.sumProp(state,'arrow')
