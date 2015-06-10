@@ -4,6 +4,7 @@ from generate import *
 # Also represents the AREA
 def numTiles():
     print len(monster['body']), 'is the total amount of boss tiles'
+    return len(monster['body'])
         
 # Gives the coordinate position for each tile
 def posTiles():
@@ -19,6 +20,7 @@ def numSpecTiles():
         num_type[monster['body'][key]] += 1
     for type in num_type:
         print 'There are', num_type[type] , 'amounts of' , type
+    return num_type
  
 # Prints the level of difficulty of the generated boss
 # The lower score the weapon has on a tile, the less effective it is
@@ -28,8 +30,6 @@ def numSpecTiles():
 # Max arrow points: 200
 def difficulty():    
     #Difficulty for just sword
-    # If we have several tools, I will make another generic tool function
-    # To calculate this
     sword_points = solve_points('sword')
     sword_total = sumProp(monster, 'sword')
     diff_checker(sword_points, sword_total, 'sword')
@@ -61,15 +61,21 @@ def solve_points(tool):
     return points
     
 def diff_checker(tool_points, tool_total, tool):
+    percent = (1.0 * tool_total)/tool_points['easy']
+    percent *= 100
     if(tool_total <= tool_points['diff']):
         print 'If your only tool is a', tool,': Difficult'
     elif(tool_total > tool_points['diff'] and tool_total <= tool_points['inter']):
         print 'If your only tool is a', tool,': Intermediate'
     elif(tool_total > tool_points['inter'] and tool_total <= tool_points['easy']):
         print 'If your only tool is a', tool,': Easy'
-    print tool,' score', tool_total, 'out of', tool_points['easy']
+    print tool,' score', tool_total, 'out of', tool_points['easy'], ':', percent,'%'
+    return percent
     
+    
+print 5.0/10
 difficulty()
+numSpecTiles()
 
 #numTiles()
 #posTiles()
