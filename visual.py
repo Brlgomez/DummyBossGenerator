@@ -32,16 +32,30 @@ def gen(canvas,x,y,width,start):
     state = generate.createMonster(randint(25,75),10,10)
     #while (len(state['body'])<200):
     #    generate.randomAssign(state);
-    print generate.draw(state)[0]
+    #print generate.draw(state)[0]
     value = analyze_boss.numTiles(state)
     #pos = analyze_boss.posTiles(state)
     num = analyze_boss.numSpecTiles(state)
-    analyze_boss.difficulty(state)
+    stat2 = analyze_boss.difficulty(state)
     #print 'fire', generate.sumProp(state,'fire')
     #print 'sword',generate.sumProp(state,'sword')
     #print 'arrow',generate.sumProp(state,'arrow')
     boss = state
     stats = value
+    othermaster = Tk()
+    othermaster.title("Analysis")
+    text = Text(othermaster, width = 100)
+    text.insert(INSERT, "0% - 33% Beatable: Difficult, 34%-66% Beatable: Intermediate, 67% - 100% Beatable: Easy ")
+    text.insert(INSERT, "\n")
+    text.insert(INSERT, stat2['sword_perc']['string2'])
+    text.insert(INSERT, "\n")
+    text.insert(INSERT, stat2['fire_perc']['string2'])
+    text.insert(INSERT, "\n")
+    text.insert(INSERT, stat2['arrow_perc']['string2'])
+    text.insert(END, "")
+    text.pack()
+    othermaster.destroy 
+
     drawBoss(C,boss,x,y,cell = width,anchor =start )
   return draw
 def drawCell(canvas, x, y, width, type):
@@ -110,13 +124,6 @@ def main(argv):
     B = Button(master, text ="Generate", command = funct)
     canvas.pack(side = TOP)
     B.pack(side = BOTTOM)
-    
-    
-    text = Text(master)
-    text.insert(INSERT, "0% - 33% Beatable: Difficult, 34%-66% Beatable: Intermediate, 67% - 100% Beatable: Easy ")
-    text.insert(INSERT, stats)
-    text.insert(END, " Insert stuff")
-    text.pack()
 
     #display_design_on_canvas(canvas, design)
 
