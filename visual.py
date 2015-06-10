@@ -55,7 +55,8 @@ def gen(canvas,x,y,width,start):
     text.insert(INSERT, stat2['arrow_perc']['string2'])
     text.insert(END, "")
     text.pack()
-    othermaster.destroy 
+    othermaster.bind('<Escape>', lambda event: othermaster.destroy())
+    #othermaster.destroy()
 
     drawBoss(C,boss,x,y,cell = width,anchor =start )
   return draw

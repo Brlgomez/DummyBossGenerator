@@ -49,16 +49,14 @@ def gen(canvas,x,y,width,start):
     text.insert(INSERT, "0% - 33% Beatable: Difficult, 34%-66% Beatable: Intermediate, 67% - 100% Beatable: Easy ")
     text.insert(INSERT, "\n")
     text.insert(INSERT, stat2['sword_perc']['string2'])
-    text.insert(INSERT, stat2['sword_perc']['string'])
     text.insert(INSERT, "\n")
     text.insert(INSERT, stat2['fire_perc']['string2'])
-    text.insert(INSERT, stat2['fire_perc']['string'])
     text.insert(INSERT, "\n")
     text.insert(INSERT, stat2['arrow_perc']['string2'])
-    text.insert(INSERT, stat2['arrow_perc']['string'])
     text.insert(END, "")
     text.pack()
-    othermaster.destroy 
+    othermaster.bind("generate", lambda event: othermaster.destroy())
+    #othermaster.destroy()
 
     drawBoss(C,boss,x,y,cell = width,anchor =start )
   return draw
