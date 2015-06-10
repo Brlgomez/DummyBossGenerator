@@ -53,6 +53,11 @@ Library = {
       'sword': 1,
       'arrow': 4,
       'fire': 1
+      },
+    "i" : {
+      'sword': 0,
+      'arrow': 1,
+      'fire': 2
       }
    }
 }
@@ -99,6 +104,9 @@ def sumProp(state,prop):
   	    sum += Library['Props'][tile][prop]
   return sum
 
+def initialize(w, l):
+  return {'width': w,'length': l,'body':{}}
+
 def createMonster(parts, width = 30, length = 20, up = -1, down = -1, left=-1, right = -1):
   parts = parts if parts<=width*length else width*length
   monsterLength = parts
@@ -134,9 +142,7 @@ def createMonster(parts, width = 30, length = 20, up = -1, down = -1, left=-1, r
           if x+1 <= width/2 + maxright:
             next.insert(0,[x + 1, y - 0])
     monsterShape.insert(-1, next.pop(randint(0, len(next) - 1)))
-  state = Library['Initial']
-  state['width'] = width
-  state['length'] = length
+  state = initialize(width, length)
   for k in range(0, len(monsterShape)):
     assign(state, monsterShape[k][0], monsterShape[k][1])
   return state

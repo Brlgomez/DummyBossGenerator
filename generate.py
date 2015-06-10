@@ -12,7 +12,7 @@ Library = {
     'length': 20,
     'body':{}
     },
-  'Types': ["a", "b", "c", "d","f","g","h"],
+  'Types': ["a", "b", "c", "d","f","g","h","i"],
   'Props': {
     "a" : {
       'sword': 2,
@@ -53,6 +53,11 @@ Library = {
       'sword': 1,
       'arrow': 4,
       'fire': 1
+      },
+    "i" : {
+      'sword': 0,
+      'arrow': 1,
+      'fire': 2
       }
    }
 }
