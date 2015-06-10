@@ -32,7 +32,7 @@ def gen(canvas,x,y,width,start):
     state = generate.createMonster(randint(25,75),10,10)
     #while (len(state['body'])<200):
     #    generate.randomAssign(state);
-    #print generate.draw(state)[0]
+    print generate.draw(state)[0]
     value = analyze_boss.numTiles(state)
     #pos = analyze_boss.posTiles(state)
     num = analyze_boss.numSpecTiles(state)
@@ -42,6 +42,7 @@ def gen(canvas,x,y,width,start):
     #print 'arrow',generate.sumProp(state,'arrow')
     boss = state
     stats = value
+
     othermaster = Tk()
     othermaster.title("Analysis")
     text = Text(othermaster, width = 100)
