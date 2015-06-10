@@ -72,9 +72,8 @@ def diff_checker(tool_points, tool_total, tool):
     print tool,' score', tool_total, 'out of', tool_points['easy'], ':', percent,'%'
     return percent
     
-    
-print 5.0/10
 difficulty()
+print '0% - 33% Beatable: Difficult, 34%-66% Beatable: Intermediate, 67% - 100% Beatable: Easy'
 numSpecTiles()
 
 #numTiles()
