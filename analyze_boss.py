@@ -3,8 +3,11 @@ from generate import *
 # Gives the total number of tiles used
 # Also represents the AREA
 def numTiles(monster):
-    print len(monster['body']), 'is the total amount of boss tiles'
-    return len(monster['body'])
+    dict = {}
+    #print len(monster['body']), 'is the total amount of boss tiles'
+    dict['value'] = len(monster['body'])
+    dict['string'] = len(monster['body']), 'is the total amount of boss tiles'
+    return dict
         
 # Gives the coordinate position for each tile
 def posTiles(monster):
@@ -29,20 +32,30 @@ def numSpecTiles(monster):
 # Max fire points: 150
 # Max arrow points: 200
 def difficulty(monster):    
+    dict = {}
     #Difficulty for just sword
     sword_points = solve_points(monster,'sword')
     sword_total = sumProp(monster, 'sword')
     sword_perc = diff_checker(sword_points, sword_total, 'sword')
+    dict['sword_points'] = sword_points
+    dict['sword_total'] = sword_total
+    dict['sword_perc'] = sword_perc
  
     #Difficulty for just fire
     fire_points = solve_points(monster, 'fire')
     fire_total = sumProp(monster, 'fire')
     fire_perc = diff_checker(fire_points, fire_total, 'fire')
-
+    dict['fire_points'] = fire_points
+    dict['fire_total'] = fire_total
+    dict['fire_perc'] = fire_perc
+    
     #Difficulty for just arrow
     arrow_points = solve_points(monster, 'arrow')
     arrow_total = sumProp(monster, 'arrow')
     arrow_perc = diff_checker(arrow_points, arrow_total, 'arrow')
+    dict['arrow_points'] = arrow_points
+    dict['arrow_total'] = arrow_total
+    dict['arrow_perc'] = arrow_perc
     
     
 def solve_points(monster, tool):
@@ -61,15 +74,20 @@ def solve_points(monster, tool):
     return points
     
 def diff_checker(tool_points, tool_total, tool):
-    print '0% - 33% Beatable: Difficult, 34%-66% Beatable: Intermediate, 67% - 100% Beatable: Easy'
+    dict = {}
+    #print '0% - 33% Beatable: Difficult, 34%-66% Beatable: Intermediate, 67% - 100% Beatable: Easy'
     percent = (1.0 * tool_total)/tool_points['easy']
     percent *= 100
+    dict['value'] = percent
     if(tool_total <= tool_points['diff']):
-        print 'If your only tool is a', tool,': Difficult'
+        #print 'If your only tool is a', tool,': Difficult'
+        dict['string'] = 'If your only tool is a', tool,': Difficult'
     elif(tool_total > tool_points['diff'] and tool_total <= tool_points['inter']):
-        print 'If your only tool is a', tool,': Intermediate'
+        #print 'If your only tool is a', tool,': Intermediate'
+        dict['string'] = 'If your only tool is a', tool,': Intermediate'
     elif(tool_total > tool_points['inter'] and tool_total <= tool_points['easy']):
-        print 'If your only tool is a', tool,': Easy'
-    print tool,' score', tool_total, 'out of', tool_points['easy'], ':', percent,'%'
-    return percent
+        #print 'If your only tool is a', tool,': Easy'
+        dict['string'] = 'If your only tool is a', tool,': Easy'
+    dict['string2'] = tool,' score', tool_total, 'out of', tool_points['easy'], ':', percent,'%'
+    return dict
     
