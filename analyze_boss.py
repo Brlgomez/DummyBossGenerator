@@ -1,4 +1,4 @@
-from generate import *
+import generate
 
 # Gives the total number of tiles used
 # Also represents the AREA
@@ -17,7 +17,7 @@ def posTiles(monster):
 # Tells the amount of each tile there is on the boss
 def numSpecTiles(monster):
     num_type = {}
-    for type in Library['Types']:
+    for type in generate.Library['Types']:
         num_type[type] = 0
     for key in monster['body']:
         num_type[monster['body'][key]] += 1
@@ -35,7 +35,7 @@ def difficulty(monster):
     dict = {}
     #Difficulty for just sword
     sword_points = solve_points(monster,'sword')
-    sword_total = sumProp(monster, 'sword')
+    sword_total = generate.sumProp(monster, 'sword')
     sword_perc = diff_checker(sword_points, sword_total, 'sword')
     dict['sword_points'] = sword_points
     dict['sword_total'] = sword_total
@@ -43,7 +43,7 @@ def difficulty(monster):
  
     #Difficulty for just fire
     fire_points = solve_points(monster, 'fire')
-    fire_total = sumProp(monster, 'fire')
+    fire_total = generate.sumProp(monster, 'fire')
     fire_perc = diff_checker(fire_points, fire_total, 'fire')
     dict['fire_points'] = fire_points
     dict['fire_total'] = fire_total
@@ -51,7 +51,7 @@ def difficulty(monster):
     
     #Difficulty for just arrow
     arrow_points = solve_points(monster, 'arrow')
-    arrow_total = sumProp(monster, 'arrow')
+    arrow_total = generate.sumProp(monster, 'arrow')
     arrow_perc = diff_checker(arrow_points, arrow_total, 'arrow')
     dict['arrow_points'] = arrow_points
     dict['arrow_total'] = arrow_total
@@ -59,11 +59,12 @@ def difficulty(monster):
     
     return dict
     
+    
 def solve_points(monster, tool):
     max_point = 0
-    for tile in Library['Props']:
-        if tool in Library['Props'][tile] and Library['Props'][tile][tool] > max_point:
-            max_point = Library['Props'][tile][tool]
+    for tile in generate.Library['Props']:
+        if tool in generate.Library['Props'][tile] and generate.Library['Props'][tile][tool] > max_point:
+            max_point = generate.Library['Props'][tile][tool]
     max_point *= len(monster['body'])
     # Now split the value into 3 values - Easy/Intermediate/Difficult
     d = max_point/3
