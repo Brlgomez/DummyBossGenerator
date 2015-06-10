@@ -2,17 +2,17 @@ from generate import *
 
 # Gives the total number of tiles used
 # Also represents the AREA
-def numTiles():
+def numTiles(monster):
     print len(monster['body']), 'is the total amount of boss tiles'
     return len(monster['body'])
         
 # Gives the coordinate position for each tile
-def posTiles():
+def posTiles(monster):
     for key in monster['body']:
         print key, 'corresponds to', monster['body'][key]
         
 # Tells the amount of each tile there is on the boss
-def numSpecTiles():
+def numSpecTiles(monster):
     num_type = {}
     for type in Library['Types']:
         num_type[type] = 0
@@ -28,24 +28,24 @@ def numSpecTiles():
 # Max sword points: 100
 # Max fire points: 150
 # Max arrow points: 200
-def difficulty():    
+def difficulty(monster):    
     #Difficulty for just sword
-    sword_points = solve_points('sword')
+    sword_points = solve_points(monster,'sword')
     sword_total = sumProp(monster, 'sword')
-    diff_checker(sword_points, sword_total, 'sword')
+    sword_perc = diff_checker(sword_points, sword_total, 'sword')
  
     #Difficulty for just fire
-    fire_points = solve_points('fire')
+    fire_points = solve_points(monster, 'fire')
     fire_total = sumProp(monster, 'fire')
-    diff_checker(fire_points, fire_total, 'fire')
+    fire_perc = diff_checker(fire_points, fire_total, 'fire')
 
     #Difficulty for just arrow
-    arrow_points = solve_points('arrow')
+    arrow_points = solve_points(monster, 'arrow')
     arrow_total = sumProp(monster, 'arrow')
-    diff_checker(arrow_points, arrow_total, 'arrow')
+    arrow_perc = diff_checker(arrow_points, arrow_total, 'arrow')
     
     
-def solve_points(tool):
+def solve_points(monster, tool):
     max_point = 0
     for tile in Library['Props']:
         if tool in Library['Props'][tile] and Library['Props'][tile][tool] > max_point:
@@ -61,6 +61,7 @@ def solve_points(tool):
     return points
     
 def diff_checker(tool_points, tool_total, tool):
+    print '0% - 33% Beatable: Difficult, 34%-66% Beatable: Intermediate, 67% - 100% Beatable: Easy'
     percent = (1.0 * tool_total)/tool_points['easy']
     percent *= 100
     if(tool_total <= tool_points['diff']):
@@ -72,10 +73,3 @@ def diff_checker(tool_points, tool_total, tool):
     print tool,' score', tool_total, 'out of', tool_points['easy'], ':', percent,'%'
     return percent
     
-difficulty()
-print '0% - 33% Beatable: Difficult, 34%-66% Beatable: Intermediate, 67% - 100% Beatable: Easy'
-numSpecTiles()
-
-#numTiles()
-#posTiles()
-#numSpecTiles()
