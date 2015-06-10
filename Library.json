@@ -1,0 +1,55 @@
+Library = {
+  'Initial': {
+    'width': 30,
+    'length': 20,
+    'body':{}
+    },
+  'Types': ["a", "b", "c", "d","f","g","h"],
+  'Props': {
+    "a" : {
+      'sword': 2,
+      'arrow': 1,
+      'fire': 0
+      },
+    "b" : {
+      'sword': 0,
+      'arrow': 0,
+      'fire': 3
+      },
+    "c" : {
+      'sword': 1,
+      'arrow': 1,
+      'fire': 1
+      },
+    "d" : {
+      'sword': 2,
+      'arrow': 4,
+      'fire': 1
+      },
+    "e" : {
+      'sword': 2,
+      'arrow': 1,
+      'fire': 0
+      },
+    "f" : {
+      'sword': 0,
+      'arrow': 0,
+      'fire': 3
+      },
+    "g" : {
+      'sword': 1,
+      'arrow': 1,
+      'fire': 1
+      },
+    "h" : {
+      'sword': 1,
+      'arrow': 4,
+      'fire': 1
+      }
+   },
+  'Inventory': {
+    "sword",
+    "arrow",
+    "fire"
+  }   
+}
