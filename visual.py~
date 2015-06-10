@@ -18,7 +18,7 @@ COLOR = {
     'i': 'brown',
 }
 boss = {"width":0,"length":0}
-stats = "" 
+stats = 0
 
 def hello():
   showinfo("Hello","hello")
@@ -41,6 +41,7 @@ def gen(canvas,x,y,width,start):
     #print 'sword',generate.sumProp(state,'sword')
     #print 'arrow',generate.sumProp(state,'arrow')
     boss = state
+    global stats
     stats = value
     drawBoss(C,boss,x,y,cell = width,anchor =start )
   return draw
@@ -115,7 +116,7 @@ def main(argv):
     text = Text(master)
     text.insert(INSERT, "0% - 33% Beatable: Difficult, 34%-66% Beatable: Intermediate, 67% - 100% Beatable: Easy ")
     text.insert(INSERT, stats)
-    text.insert(END, " Insert stuff")
+    text.insert(END, "Insert stuff")
     text.pack()
 
     #display_design_on_canvas(canvas, design)
