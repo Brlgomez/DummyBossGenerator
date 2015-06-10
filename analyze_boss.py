@@ -57,6 +57,7 @@ def difficulty(monster):
     dict['arrow_total'] = arrow_total
     dict['arrow_perc'] = arrow_perc
     
+    return dict
     
 def solve_points(monster, tool):
     max_point = 0
