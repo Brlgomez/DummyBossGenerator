@@ -6,7 +6,7 @@ import analyze_boss
 import game
 
 
-TILE_SIZE = 32
+TILE_SIZE = 15
 COLOR = {
     'a': 'white',
     'b': 'red',
@@ -170,19 +170,19 @@ def main(argv):
 
     master = Tk()
     master.title("Boss Maker")
-    w,h = TILE_SIZE * 10, TILE_SIZE * 10
+    w,h = TILE_SIZE * 32, TILE_SIZE * 32
     bossCanvas = Canvas(master, bg="navy", width=w, height=h)
     canvas = Canvas(master, bg="navy", width=w, height=h)
     coord = 10, 10, 240, 240
     #filename = PhotoImage(file = "sunshine.gif")
     #image = canvas.create_image(300, 300, anchor=CENTER, image=filename)
     global level 
-    drawLevel(canvas,level,w/2,h/2,10,anchor = 'CENTER')
-    funct = genLevel(canvas,w/2,h/2,10,start = 'CENTER')
+    drawLevel(canvas,level,w/2,h/2,TILE_SIZE,anchor = 'CENTER')
+    funct = genLevel(canvas,w/2,h/2,TILE_SIZE,start = 'CENTER')
     B = Button(master, text ="Clear", command = funct)
-    add = addBoss(canvas,w/2,h/2,10,start = 'CENTER')
+    add = addBoss(canvas,w/2,h/2,TILE_SIZE,start = 'CENTER')
     A = Button(master, text ="Import",command = add)
-    gener = gen(bossCanvas,w/2,h/2,10,start = 'CENTER')
+    gener = gen(bossCanvas,w/2,h/2,TILE_SIZE,start = 'CENTER')
     C = Button(master, text ="Generate", command = gener)
     D = Button(master, text ="Evaluate", command = eval)
     
@@ -201,20 +201,20 @@ def main(argv):
     
     def tick():
        game.tick(level)
-       drawLevel(canvas,level,w/2,h/2,10,anchor = 'CENTER')
+       drawLevel(canvas,level,w/2,h/2,TILE_SIZE,anchor = 'CENTER')
        master.after(10, tick)
     def move(direction):
        game.moveOrTurn(level,direction,0.5)
-       drawLevel(canvas,level,w/2,h/2,10,anchor = 'CENTER')
+       drawLevel(canvas,level,w/2,h/2,TILE_SIZE,anchor = 'CENTER')
     def fire():
        game.shootFire(level)
-       drawLevel(canvas,level,w/2,h/2,10,anchor = 'CENTER')
+       drawLevel(canvas,level,w/2,h/2,TILE_SIZE,anchor = 'CENTER')
     def sword():
        game.swingSword(level)
-       drawLevel(canvas,level,w/2,h/2,10,anchor = 'CENTER')
+       drawLevel(canvas,level,w/2,h/2,TILE_SIZE,anchor = 'CENTER')
     def arrow():
        game.shootArrow(level)
-       drawLevel(canvas,level,w/2,h/2,10,anchor = 'CENTER')
+       drawLevel(canvas,level,w/2,h/2,TILE_SIZE,anchor = 'CENTER')
     master.bind('<Escape>', lambda event: master.quit())
     master.bind('<Right>', lambda event:move("E"))
     master.bind('<Left>', lambda event: move("W"))
