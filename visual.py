@@ -53,6 +53,7 @@ def gen(canvas,x,y,width,start):
     boss = state
     #pos = analyze_boss.posTiles(state)
     #othermaster.destroy()
+    canvas.delete(ALL)
     drawBoss(canvas,boss,x,y,cell = width,anchor =start )
   return draw
 def eval():
@@ -112,7 +113,6 @@ def getInitialCoord(x,y,width,length,anchor):
     return startX,startY
     
 def drawBoss(canvas,state,x,y,cell = 4,anchor = 'CENTER'):
-    canvas.delete(ALL)
     width = state['width']*cell
     length = state['length']*cell
     startX, startY = getInitialCoord(x,y,width,length,anchor)
@@ -147,11 +147,20 @@ def drawLevel(canvas,state,x,y,cell = 4,anchor = 'CENTER'):
         x,y = entity["physLoc"]
         wid = entity["width"]*cell
         len = entity["length"]*cell
-        drawRect(canvas,startX+x*cell-wid/2,startY+y*cell-len/2,wid,len,entity["name"])
+        if entity["name"] is "boss":
+            drawBoss(canvas,entity["data"],startX+x*cell,startY+y*cell,cell,'CENTER')
+        else:
+          drawRect(canvas,startX+x*cell-wid/2,startY+y*cell-len/2,wid,len,entity["name"])
     x,y = state['player']
     #drawCell(canvas,startX+x*cell,startY+y*cell,cell,"player")
     drawRect(canvas,startX+x*cell-cell/2,startY+y*cell-cell/2,cell,cell,"player")
-
+def addBoss(canvas,x,y,width,start):
+    def add():
+        global boss
+        global level
+        game.placeBoss(level,level["width"]/2,level["width"]/2,boss)
+        drawLevel(canvas,level,x,y,cell = width,anchor =start)
+    return add
 def button():
     global boss
     boss = gen()
@@ -171,19 +180,24 @@ def main(argv):
     drawLevel(canvas,level,w/2,h/2,10,anchor = 'CENTER')
     funct = genLevel(canvas,w/2,h/2,10,start = 'CENTER')
     B = Button(master, text ="Clear", command = funct)
+    add = addBoss(canvas,w/2,h/2,10,start = 'CENTER')
+    A = Button(master, text ="Import",command = add)
     gener = gen(bossCanvas,w/2,h/2,10,start = 'CENTER')
     C = Button(master, text ="Generate", command = gener)
     D = Button(master, text ="Evaluate", command = eval)
+    
     canvas.pack()
-    canvas.grid(row=0, column = 0)
+    canvas.grid(row=0, column = 0, columnspan = 2)
     bossCanvas.pack()
-    bossCanvas.grid(row=0, column = 1, columnspan = 2)
+    bossCanvas.grid(row=0, column = 2, columnspan = 2)
     B.pack()
     B.grid(row=1, column = 0)
+    A.pack()
+    A.grid(row=1, column = 1)
     C.pack()
-    C.grid(row=1, column = 1)
+    C.grid(row=1, column = 2)
     D.pack()
-    D.grid(row=1, column = 2)
+    D.grid(row=1, column = 3)
     
     def tick():
        game.tick(level)
