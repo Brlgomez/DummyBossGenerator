@@ -44,6 +44,7 @@ def contactWith(targets,do):
 # (lambda x: x>2)
 def countDown(goal,do,increment = 1,restart = True):
     def function(state,this,that = None):
+        #print this["counter"]
         if goal(this["counter"]):
             if restart: this["counter"] = 0
             return do(state,this,that)
@@ -53,7 +54,7 @@ def countDown(goal,do,increment = 1,restart = True):
 #deletes it's own index
 def killSelf(state,this,that = None):
     dict, i = this["dataLoc"]
-    del state[dict][i]
+    del this
     return DEAD
 #move in object's direction
 def moveForward(state,this, that = None):
@@ -73,12 +74,12 @@ def moveForward(state,this, that = None):
 OBJECTS = {
   "wall":{
     "name":"wall",
-    "length":1,
-    "width":1,
+    "length":1.0,
+    "width":1.0,
     "dataLoc": ("objects",0),
-    "physLoc": (0,0),
+    "physLoc": (0.0,0.0),
     "isSolid":True,
-    "movementSpeed":0,
+    "movementSpeed":0.0,
     "movementDirection":"N",
     "damageEnemy":False,
     "damageHero":False,
@@ -93,12 +94,12 @@ OBJECTS = {
 ENTITIES = {
   "swordQEntity":{
     "name":"swordQEntity",
-    "length":2,
-    "width":2,
+    "length":2.0,
+    "width":2.0,
     "dataLoc": ("entities",0),
-    "physLoc": (0,0),
+    "physLoc": (0.0,0.0),
     "isSolid":False,
-    "movementSpeed":0,
+    "movementSpeed":0.0,
     "movementDirection":"N",
     "damageEnemy":True,
     "damageHero":False,
@@ -110,12 +111,12 @@ ENTITIES = {
   },
   "arrowEntity":{
     "name":"arrowEntity",
-    "length":1,
-    "width":1,
+    "length":1.0,
+    "width":1.0,
     "dataLoc": ("entities",0),
-    "physLoc": (0,0),
+    "physLoc": (0.0,0.0),
     "isSolid":False,
-    "movementSpeed":1,
+    "movementSpeed":1.0,
     "movementDirection":"N",
     "damageEnemy":True,
     "damageHero":False,
@@ -127,8 +128,8 @@ ENTITIES = {
   },
   "fireBallEntity":{
     "name":"fireBallEntity",
-    "length":1,
-    "width":1,
+    "length":0.8,
+    "width":0.8,
     "dataLoc": ("objects",0),
     "physLoc": (0,0),
     "isSolid":False,
@@ -151,7 +152,7 @@ def initialize(width,length):
   return {
     "width":width,
     "length":length,
-    "player":(width/2,length/2),
+    "player":(width/2.0,length/2.0),
     "playerDirection":"N",
     "playerInventory":(),
     "currentItem":None,
@@ -178,8 +179,15 @@ def placeEntity(state,x,y,name):
   assert name in ENTITIES.keys()
   assert x >= 0 and x <state["width"] and y >= 0 and y <state["length"]
   entity = dict(ENTITIES[name])
-  entity["dataLoc"] = ("entities",len(state["entities"]))
   entity["physLoc"] = (x,y)    
+  thisItem = 0
+  colliding = checkCollision(state,entity)
+  for colFunction in entity["onCollision"]:
+    for that in colliding:
+      thisItem = colFunction(state,entity,that)
+  if thisItem is DEAD:
+    return {}
+  entity["dataLoc"] = ("entities",len(state["entities"]))
   state["entities"].append(((x,y),entity))
   return entity
 def buildSmall():
@@ -188,9 +196,10 @@ def buildSmall():
     for i in range(w):
       placeObject(state,i,0,"wall")
       placeObject(state,i,l-1,"wall")
-    for i in range(l):
+    for i in range(1,l-1):
       placeObject(state,0,i,"wall")
       placeObject(state,w-1,i,"wall")
+    state["player"] = (w/2,l-3)
     return state
 def intersect(minX1,maxX1,minY1,maxY1,minX2,maxX2,minY2,maxY2):
     insideX = (minX1<=minX2 and minX2<=maxX1) or (minX2<=minX1 and minX1<=maxX2)
@@ -211,6 +220,7 @@ def intersectThisThat(this, that):
     x,y = that["physLoc"]
     eMinX, eMinY = x-w,y-l
     eMaxX,eMaxY = x+w,y+l
+    #print minX,maxX,minY,maxY,eMinX,eMaxX,eMinY,eMaxY
     return intersect(minX,maxX,minY,maxY,eMinX,eMaxX,eMinY,eMaxY)
 def entitiesToGrid(entities):
     entityDict = {}
@@ -239,10 +249,10 @@ def stateToString(state):
         str+='\n'
     return str
 def viableLoc(state,x,y,w=0,l=0):
-    if (x<0 or x>=state["width"] or y<0 or y>=state["length"]):
+    if (x-w/2<0 or x+w/2>=state["width"] or y-l/2<0 or y+l/2>=state["length"]):
         return False
     for object in state['objects'].values():
-        if object["isSolid"] and intersectThat(x-w,x+w,y-l,y+l,object):
+        if object["isSolid"] and intersectThat(x-w/2,x+w/2,y-l/2,y+l/2,object):
             return False
     for loc,entity in state['entities']:
         if entity["isSolid"] and intersectThat(x-w,x+w,y-l,y+l,entity):
@@ -275,13 +285,16 @@ def tick(state):
                 colliding = checkCollision(state,entity)
                 for colFunction in entity["onCollision"]:
                     for that in colliding:
-                        this = colFunction(state,entity,that)
-                        if this is DEAD:
+                        thisItem = colFunction(state,entity,that)
+                        if thisItem is DEAD:
+                            del state['entities'][i]
                             isDead = True
                             i -=1
                             break
                     if isDead: break
-            if this is DEAD:i -= 1
+            if this is DEAD:
+                del state['entities'][i]
+                i -= 1
         i+=1
 def playerTurn(state,direction):
     state["playerDirection"] = direction
@@ -290,15 +303,24 @@ def playerForward(state,distance):
     dx,dy = loc[state["playerDirection"]]
     x,y = state["player"]
     nX, nY = x+dx*distance,y+dy*distance
-    if(viableLoc(state,nX,nY)):
+    if(viableLoc(state,nX,nY,1,1)):
         state["player"] = (nX,nY)
+def moveOrTurn(state,direction,distance = 1):
+    if state["playerDirection"] != direction:
+        playerTurn(state,direction)
+    else:
+        playerForward(state,distance)
+    #print state["player"]
+    return state["player"]
 def shootArrow(state):
     loc = {"N":(0,-1),"E":(1,0),"W":(-1,0),"S":(0,1)}
+    shape = {"N":(0.2,1.0),"E":(1.0,0.2),"W":(1.0,0.2),"S":(0.2,1.0)}
     dx,dy = loc[state["playerDirection"]]
     x,y = state["player"]
     nX, nY = x+dx,y+dy
     arrow = placeEntity(state,nX,nY,"arrowEntity")
     arrow["direction"] = state["playerDirection"]
+    arrow["width"],arrow["length"] = shape[arrow["direction"]]
 def shootFire(state):
     loc = {"N":(0,-1),"E":(1,0),"W":(-1,0),"S":(0,1)}
     dx,dy = loc[state["playerDirection"]]
