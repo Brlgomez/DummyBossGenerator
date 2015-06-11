@@ -130,14 +130,14 @@ ENTITIES = {
     "name":"fireBallEntity",
     "length":0.8,
     "width":0.8,
-    "dataLoc": ("objects",0),
+    "dataLoc": ("entities",0),
     "physLoc": (0,0),
     "isSolid":False,
     "movementSpeed":1,
     "movementDirection":"N",
-    "damageEnemy":False,
+    "damageEnemy":True,
     "damageHero":False,
-    "damageType":"",
+    "damageType":"fire",
     "counter": 0,
     "onCollision": [contactWith(("wall"),killSelf)],
     "onTick": [moveForward],
@@ -190,6 +190,39 @@ def placeEntity(state,x,y,name):
   entity["dataLoc"] = ("entities",len(state["entities"]))
   state["entities"].append(((x,y),entity))
   return entity
+def importBoss(boss,x,y):  
+  bossEntity = {
+    "name":"boss",
+    "length":boss["length"],
+    "width":boss["width"],
+    "dataLoc": ("entities",0),
+    "physLoc": (x,y),
+    "isSolid":False,
+    "movementSpeed":1,
+    "movementDirection":"S",
+    "damageEnemy":False,
+    "damageHero":True,
+    "damageType":"",
+    "counter": 0,
+    "onCollision": [],
+    "onTick": [],
+    "asChar":'B',
+    "data" : boss
+  }
+  return bossEntity
+def placeBoss(state,x,y,boss):
+  #assert x >= 0 and x <state["width"] and y >= 0 and y <state["length"]
+  if(x < 0 or x>=state["width"] or y<0 or y>=state["length"]):
+    print "ERROR: invalid location"
+    return
+  enemy = importBoss(boss,x,y)
+  w,l = enemy["width"],enemy["length"]
+  if(x - w/2< 0 or x+w/2>=state["width"] or y-l/2<0 or y+l/2>=state["length"]):
+    print "ERROR: Boss too big"
+    return     
+  enemy["dataLoc"] = ("entities",len(state["entities"]))
+  state["entities"].append(((x,y),enemy))
+  return enemy
 def buildSmall():
     w, l = 20,20
     state = initialize(w,l)
@@ -292,7 +325,7 @@ def tick(state):
                             i -=1
                             break
                     if isDead: break
-            if this is DEAD:
+            elif this is DEAD:
                 del state['entities'][i]
                 i -= 1
         i+=1
