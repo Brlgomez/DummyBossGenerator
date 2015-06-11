@@ -122,7 +122,7 @@ ENTITIES = {
     "damageHero":False,
     "damageType":"pierce",
     "counter": 0,
-    "onCollision": [contactWith(("wall"),killSelf)],
+    "onCollision": [contactWith(("wall","boss"),killSelf)],
     "onTick": [moveForward],
     "asChar": '|'
   },
@@ -139,7 +139,7 @@ ENTITIES = {
     "damageHero":False,
     "damageType":"fire",
     "counter": 0,
-    "onCollision": [contactWith(("wall"),killSelf)],
+    "onCollision": [contactWith(("wall","boss"),killSelf)],
     "onTick": [moveForward],
     "asChar":'*'
   }
@@ -238,17 +238,40 @@ def intersect(minX1,maxX1,minY1,maxY1,minX2,maxX2,minY2,maxY2):
     insideX = (minX1<=minX2 and minX2<=maxX1) or (minX2<=minX1 and minX1<=maxX2)
     insideY = (minY1<=minY2 and minY2<=maxY1) or (minY2<=minY1 and minY1<=maxY2)
     return insideX and insideY
+def intersectBoss(minX,maxX,minY,maxY,boss):
+    w,l = boss["width"]/2.0,boss["length"]/2.0
+    x,y = boss["physLoc"]
+    #trivial check
+    if not intersect(minX,maxX,minY,maxY,x-w,x+w,y-l,y+l):
+        return False
+    for loc,type in boss["data"]["body"].items():
+        width = 1.0
+        x1,y1 = loc
+        x2 = x-w +x1*boss["width"]/boss["data"]["width"]
+        y2 = y-l +y1*boss["length"]/boss["data"]["length"]
+        #may end up changing intersect so it returns some information
+        i = intersect(minX,maxX,minY,maxY,x2,x2+width,y2,y2+width)
+        if i:
+            del boss["data"]["body"][(x1,y1)]
+            return i
+    return False
 def intersectThat(minX,maxX,minY,maxY,that):
-    w,l = that["width"]/2,that["length"]/2
+    if that["name"] == "boss": 
+        return intersectBoss(minX,maxX,minY,maxY,that)
+    w,l = that["width"]/2.0,that["length"]/2.0
     x,y = that["physLoc"]
     eMinX, eMinY = x-w,y-l
     eMaxX,eMaxY = x+w,y+l
     return intersect(minX,maxX,minY,maxY,eMinX,eMaxX,eMinY,eMaxY)
 def intersectThisThat(this, that):
-    w,l = this["width"]/2,this["length"]/2
+    w,l = this["width"]/2.0,this["length"]/2.0
     x,y = this["physLoc"]
     minX,minY = x-w,y-l 
     maxX,maxY = x+w,y+l
+    if that["name"] == "boss": 
+        return intersectThat(minX,maxX,minY,maxY,that)
+    if this["name"] == "boss": 
+        return intersectThat(that,this)
     w,l = that["width"]/2,that["length"]/2
     x,y = that["physLoc"]
     eMinX, eMinY = x-w,y-l
